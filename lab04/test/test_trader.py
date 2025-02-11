@@ -1,7 +1,7 @@
 from math import exp
 from pathlib import Path
 import sys
-#sys.path.append(str(Path(__file__).parents[2]))
+sys.path.append(str(Path(__file__).parents[2]))
 
 import json
 import pytest
@@ -9,12 +9,9 @@ from jsondiff import diff
 from util.llm_utils import TemplateChat
 from lab04.lab04 import lab04_params
 
-def load_test_data(file_path="lab04/test/test_trader.py"):
+def load_test_data(file_path="lab04/test/test_scenarios.json"):
     with open(Path(file_path), 'r') as f:
         return json.load(f)
-
-def fix_json_string(result):
-    return result.replace("'", '"')
 
 @pytest.mark.parametrize("scenario", load_test_data())
 def test_scenario(scenario):
@@ -47,10 +44,10 @@ def test_scenario(scenario):
             result = e.value[1]
             break
 
-    result_fixed = fix_json_string(result)
-    print('Output: ',result_fixed)
+    # Compare to what we expect
+    print('Output: ',result)
     print('Expected: ',expected_response)
-    assert not diff(json.loads(result_fixed), expected_response)
+    assert not diff(json.loads(result), expected_response)
 
 if __name__ == "__main__":
     test_scenario(
